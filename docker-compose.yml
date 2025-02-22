@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  database:
+    image: postgres:latest
+    container_name: conduit-database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=conduit_database
+      - POSTGRES_HOST=127.0.0.1
+      - POSTGRES_PASSWORD=development
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=development
