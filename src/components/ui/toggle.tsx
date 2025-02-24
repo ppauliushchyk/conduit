@@ -83,6 +83,7 @@ export default function Toggle(props: Readonly<ToggleProps>) {
                     indicatorCommonClasses,
                     indicatorVariantClasses,
                   )}
+                  id={id}
                   layoutId={`${id}-toggle-indicator`}
                 >
                   {item.label}
