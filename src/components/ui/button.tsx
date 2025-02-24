@@ -94,7 +94,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   CommonProps &
   (IconProps | TextProps);
 
-export default function Button(props: Readonly<ButtonProps>) {
+export function Button(props: Readonly<ButtonProps>) {
   const {
     "aria-label": label,
     children,

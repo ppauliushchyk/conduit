@@ -36,7 +36,7 @@ import {
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
-import Button from "./button";
+import { Button } from "./button";
 
 type DropdownProps = {
   initialOpen?: boolean;
@@ -135,7 +135,7 @@ function useDropdownContext() {
 type ContainerProps = HTMLAttributes<HTMLDivElement> &
   RefAttributes<HTMLDivElement>;
 
-function Container(props: Readonly<ContainerProps>) {
+export function Container(props: Readonly<ContainerProps>) {
   const context = useDropdownContext();
   const ref = useMergeRefs([context.refs.setFloating, props.ref]);
 
@@ -159,7 +159,7 @@ function Container(props: Readonly<ContainerProps>) {
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
-function Content(props: Readonly<ContentProps>) {
+export function Content(props: Readonly<ContentProps>) {
   const { children, className, ...rest } = props;
 
   const context = useDropdownContext();
@@ -187,7 +187,7 @@ function Content(props: Readonly<ContentProps>) {
 
 type ItemProps = HTMLAttributes<HTMLButtonElement>;
 
-function Item(props: Readonly<ItemProps>) {
+export function Item(props: Readonly<ItemProps>) {
   const { children, className, onClick, ...rest } = props;
 
   const { activeIndex, getItemProps } = useDropdownContext();
@@ -223,7 +223,7 @@ function Item(props: Readonly<ItemProps>) {
 type TriggerProps = ButtonHTMLAttributes<HTMLButtonElement> &
   RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-function Trigger(props: Readonly<TriggerProps>) {
+export function Trigger(props: Readonly<TriggerProps>) {
   const { asChild, children, ...rest } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -263,7 +263,7 @@ function Trigger(props: Readonly<TriggerProps>) {
 
 type WrapperProps = DropdownProps & { children: ReactNode };
 
-function Wrapper(props: Readonly<WrapperProps>) {
+export function Wrapper(props: Readonly<WrapperProps>) {
   const { children, ...rest } = props;
 
   const dropdown = useDropdown(rest);
@@ -274,13 +274,3 @@ function Wrapper(props: Readonly<WrapperProps>) {
     </DropdownContext.Provider>
   );
 }
-
-const Dropdown = {
-  Container,
-  Content,
-  Item,
-  Trigger,
-  Wrapper,
-};
-
-export default Dropdown;

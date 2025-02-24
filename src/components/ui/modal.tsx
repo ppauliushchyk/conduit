@@ -31,7 +31,7 @@ import {
 import { MdOutlineClose } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 
-import Button from "./button";
+import { Button } from "./button";
 
 interface ModalProps {
   initialOpen?: boolean;
@@ -102,7 +102,7 @@ function useModalContext() {
 type CloseProps = ButtonHTMLAttributes<HTMLButtonElement> &
   RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-function Close(props: Readonly<CloseProps>) {
+export function Close(props: Readonly<CloseProps>) {
   const { asChild, children, className, ref, ...rest } = props;
 
   const { setOpen } = useModalContext();
@@ -135,7 +135,7 @@ function Close(props: Readonly<CloseProps>) {
 type ContainerProps = HTMLAttributes<HTMLDivElement> &
   RefAttributes<HTMLDivElement>;
 
-function Container(props: Readonly<ContainerProps>) {
+export function Container(props: Readonly<ContainerProps>) {
   const context = useModalContext();
   const ref = useMergeRefs([context.refs.setFloating, props.ref]);
 
@@ -171,7 +171,7 @@ function Container(props: Readonly<ContainerProps>) {
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
-function Content(props: Readonly<ContentProps>) {
+export function Content(props: Readonly<ContentProps>) {
   const { children, className, ...rest } = props;
 
   const context = useModalContext();
@@ -197,7 +197,7 @@ function Content(props: Readonly<ContentProps>) {
 type TriggerProps = HTMLAttributes<HTMLButtonElement> &
   RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-function Trigger(props: Readonly<TriggerProps>) {
+export function Trigger(props: Readonly<TriggerProps>) {
   const { asChild, children, ...rest } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -237,7 +237,7 @@ function Trigger(props: Readonly<TriggerProps>) {
 type DescriptionProps = HTMLAttributes<HTMLParagraphElement> &
   RefAttributes<HTMLParagraphElement>;
 
-function Description(props: Readonly<DescriptionProps>) {
+export function Description(props: Readonly<DescriptionProps>) {
   const { children, className, ref, ...rest } = props;
 
   const { setDescriptionId } = useModalContext();
@@ -263,7 +263,7 @@ function Description(props: Readonly<DescriptionProps>) {
 
 type FooterProps = HTMLAttributes<HTMLDivElement>;
 
-function Footer(props: Readonly<FooterProps>) {
+export function Footer(props: Readonly<FooterProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -282,7 +282,7 @@ type HeaderProps = HTMLAttributes<HTMLDivElement> & {
   title?: string;
 };
 
-function Header(props: Readonly<HeaderProps>) {
+export function Header(props: Readonly<HeaderProps>) {
   const {
     children,
     className,
@@ -318,7 +318,7 @@ function Header(props: Readonly<HeaderProps>) {
 type TitleProps = HTMLAttributes<HTMLHeadingElement> &
   RefAttributes<HTMLHeadingElement>;
 
-function Title(props: Readonly<TitleProps>) {
+export function Title(props: Readonly<TitleProps>) {
   const { children, className, ref, ...rest } = props;
 
   const { setLabelId } = useModalContext();
@@ -344,7 +344,7 @@ function Title(props: Readonly<TitleProps>) {
 
 type WrapperProps = ModalProps & { children: ReactNode };
 
-function Wrapper(props: Readonly<WrapperProps>) {
+export function Wrapper(props: Readonly<WrapperProps>) {
   const { children, ...rest } = props;
 
   const modal = useModal(rest);
@@ -353,17 +353,3 @@ function Wrapper(props: Readonly<WrapperProps>) {
     <ModalContext.Provider value={modal}>{children}</ModalContext.Provider>
   );
 }
-
-const Modal = {
-  Close,
-  Container,
-  Content,
-  Description,
-  Footer,
-  Header,
-  Title,
-  Trigger,
-  Wrapper,
-};
-
-export default Modal;

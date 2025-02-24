@@ -46,7 +46,7 @@ type ToggleProps = {
   options: Option[];
 };
 
-export default function Toggle(props: Readonly<ToggleProps>) {
+export function Toggle(props: Readonly<ToggleProps>) {
   const { id: controlledId, options } = props;
 
   const uncontrolledId = useId();

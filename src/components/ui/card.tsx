@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 type BodyProps = HTMLAttributes<HTMLDivElement>;
 
-function Body(props: Readonly<BodyProps>) {
+export function Body(props: Readonly<BodyProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -15,7 +15,7 @@ function Body(props: Readonly<BodyProps>) {
 
 type ContentProps = HTMLAttributes<HTMLDivElement>;
 
-function Content(props: Readonly<ContentProps>) {
+export function Content(props: Readonly<ContentProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -33,7 +33,7 @@ function Content(props: Readonly<ContentProps>) {
 
 type DescriptionProps = HTMLAttributes<HTMLParagraphElement>;
 
-function Description(props: Readonly<DescriptionProps>) {
+export function Description(props: Readonly<DescriptionProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -48,7 +48,7 @@ function Description(props: Readonly<DescriptionProps>) {
 
 type FooterProps = HTMLAttributes<HTMLDivElement>;
 
-function Footer(props: Readonly<FooterProps>) {
+export function Footer(props: Readonly<FooterProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -66,7 +66,7 @@ type HeaderProps = HTMLAttributes<HTMLDivElement> & {
   title?: string;
 };
 
-function Header(props: Readonly<HeaderProps>) {
+export function Header(props: Readonly<HeaderProps>) {
   const { children, className, title, description, ...rest } = props;
 
   return (
@@ -88,7 +88,7 @@ function Header(props: Readonly<HeaderProps>) {
 
 type TitleProps = HTMLAttributes<HTMLHeadingElement>;
 
-function Title(props: Readonly<TitleProps>) {
+export function Title(props: Readonly<TitleProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -97,14 +97,3 @@ function Title(props: Readonly<TitleProps>) {
     </h3>
   );
 }
-
-const Card = {
-  Body,
-  Content,
-  Description,
-  Footer,
-  Header,
-  Title,
-};
-
-export default Card;
