@@ -10,7 +10,7 @@ const variantClasses = twMerge(
 );
 
 const itemCommonClasses = twMerge(
-  "relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-1 border-transparent px-6 py-2 text-sm leading-5 font-medium",
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-1 border-transparent px-6 py-2 text-sm leading-5 font-medium",
   "focus:outline-none",
   "disabled:pointer-events-none disabled:opacity-50",
 );
@@ -27,7 +27,7 @@ const itemVariantClasses = twMerge(
 );
 
 const indicatorCommonClasses = twMerge(
-  "absolute -inset-[1px] z-1 inline-flex items-center justify-center rounded-full",
+  "absolute inset-0 z-1 inline-flex items-center justify-center rounded-full",
 );
 
 const indicatorVariantClasses = twMerge(
@@ -68,7 +68,7 @@ export function Toggle(props: Readonly<ToggleProps>) {
   const renderItem = useCallback(
     (item: Option) => {
       return (
-        <motion.li key={item.value}>
+        <motion.li className="relative" key={item.value}>
           <motion.button
             className={twMerge(itemCommonClasses, itemVariantClasses)}
             disabled={item.disabled}
