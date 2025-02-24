@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, ReactNode, RefAttributes } from "react";
 import type { IconType } from "react-icons/lib";
-import { twJoin, twMerge } from "tailwind-merge";
+import { twMerge } from "tailwind-merge";
 
 const commonClasses = twMerge(
   "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-1 leading-5 font-medium",
@@ -64,8 +64,8 @@ const variantClasses = {
 const iconClasses = twMerge("p-2.5 text-xl");
 const textClasses = twMerge("px-6 py-2.5 text-sm");
 
-const iconLeftClasses = twJoin("ps-4");
-const iconRightClasses = twJoin("pe-4");
+const iconLeftClasses = twMerge("ps-4");
+const iconRightClasses = twMerge("pe-4");
 
 const iconSideClasses = twMerge("shrink-0 text-lg leading-6");
 
