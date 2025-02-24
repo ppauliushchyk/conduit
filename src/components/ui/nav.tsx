@@ -44,7 +44,8 @@ const itemCommonClasses = twMerge(
 );
 
 const itemClasses = twMerge(
-  "cursor-pointer overflow-hidden",
+  "cursor-pointer",
+  "focus:ring-2 focus:outline-none",
   "border-zinc-300 bg-zinc-300 text-zinc-900",
   "hover:bg-zinc-300/80",
   "focus:ring-zinc-700/50",
