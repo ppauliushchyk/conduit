@@ -82,6 +82,8 @@ type UINavItemProps = {
   IconRight?: IconType;
 };
 
+const MotionLink = motion(Link);
+
 function Item(props: Readonly<UINavItemProps>) {
   const { children, href, IconLeft, IconRight } = props;
 
@@ -91,7 +93,7 @@ function Item(props: Readonly<UINavItemProps>) {
 
   return (
     <motion.li className="relative" key={href}>
-      <Link
+      <MotionLink
         className={twMerge(
           itemCommonClasses,
           itemClasses.dark,
@@ -111,16 +113,16 @@ function Item(props: Readonly<UINavItemProps>) {
                 indicatorClasses.dark,
                 indicatorClasses.light,
               )}
-              id={`${id}-nav-indicator`}
-              layoutId={`${id}-nav-indicator`}
+              id={id}
+              layoutId={id}
             >
               {IconLeft && <IconLeft className={iconClasses} />}
-              <motion.div>{children}</motion.div>
+              {children}
               {IconRight && <IconRight className={iconClasses} />}
             </motion.div>
           )}
         </AnimatePresence>
-      </Link>
+      </MotionLink>
     </motion.li>
   );
 }

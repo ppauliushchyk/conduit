@@ -147,8 +147,8 @@ function Item(props: Readonly<UIToggleItemProps>) {
                 indicatorClasses.dark,
                 indicatorClasses.light,
               )}
-              id={`${id}-toggle-indicator`}
-              layoutId={`${id}-toggle-indicator`}
+              id={id}
+              layoutId={id}
             >
               {content}
             </motion.div>
