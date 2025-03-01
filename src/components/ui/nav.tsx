@@ -2,113 +2,121 @@
 
 import type { HTMLMotionProps } from "motion/react";
 import { motion, AnimatePresence } from "motion/react";
-import Link, { LinkProps } from "next/link";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  AnchorHTMLAttributes,
-  Children,
-  cloneElement,
+  createContext,
   HTMLAttributes,
-  isValidElement,
+  ReactNode,
+  useContext,
   useId,
+  useMemo,
 } from "react";
 import type { IconType } from "react-icons/lib";
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
-type ContentProps = HTMLAttributes<HTMLUListElement> &
-  HTMLMotionProps<"ul"> & { id?: string };
+import { UIThemeClasses } from "./types";
 
-export function Content(props: Readonly<ContentProps>) {
-  const { children, className, id: controlledId, ...rest } = props;
+type NavProps = {
+  id?: string;
+};
+
+function useNav(props: NavProps) {
+  const { id: controlledId } = props;
 
   const uncontrolledId = useId();
   const id = controlledId ?? uncontrolledId;
 
-  const mapped = Children.map(children, (item) => {
-    if (isValidElement(item)) {
-      return cloneElement(item, { navId: id } as Record<string, unknown>);
-    }
-
-    return item;
-  });
-
-  return (
-    <motion.ul {...rest} className={twMerge("flex gap-2", className)}>
-      {mapped}
-    </motion.ul>
-  );
+  return useMemo(() => ({ id }), [id]);
 }
 
-const itemCommonClasses = twMerge(
-  "inline-flex items-center justify-center gap-2 rounded-full border-1 px-6 py-2.5 text-sm leading-5 font-medium",
-);
+type ContextType = ReturnType<typeof useNav> | null;
 
-const itemClasses = twMerge(
-  "cursor-pointer",
+const NavContext = createContext<ContextType>(null);
+
+function useNavContext() {
+  const context = useContext(NavContext);
+
+  if (!context) {
+    throw new Error("Nav components must be wrapped in the Wrapper component");
+  }
+
+  return context;
+}
+
+const itemCommonClasses = twJoin(
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-1 px-6 py-2.5 text-sm leading-5 font-medium",
   "focus:ring-2 focus:outline-none",
-  "border-zinc-300 bg-zinc-300 text-zinc-900",
-  "hover:bg-zinc-300/80",
-  "focus:ring-zinc-700/50",
-  "active:bg-zinc-300",
-  "dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100",
-  "dark:hover:bg-zinc-800/90",
-  "dark:focus:ring-zinc-300/50",
-  "dark:active:bg-zinc-800",
 );
 
-const itemIconLeftClasses = twMerge("ps-4");
-const itemIconRightClasses = twMerge("pe-4");
+const itemClasses: UIThemeClasses = {
+  dark: twJoin(
+    "dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100",
+    "dark:hover:bg-zinc-800/90",
+    "dark:focus:ring-zinc-300/50",
+    "dark:active:bg-zinc-800",
+  ),
+  light: twJoin(
+    "border-zinc-300 bg-zinc-300 text-zinc-900",
+    "hover:bg-zinc-300/80",
+    "focus:ring-zinc-700/50",
+    "active:bg-zinc-300",
+  ),
+};
 
-const itemIconSideClasses = twMerge("shrink-0 text-lg leading-6");
+const iconClasses = twJoin("shrink-0 text-lg leading-6");
 
-const itemIndicatorClasses = twMerge(
-  "absolute inset-0 z-1",
-  "border-lime-300 bg-lime-300 text-lime-950",
+const indicatorCommonClasses = twMerge(
+  "absolute inset-0 z-1 inline-flex items-center justify-center gap-2 rounded-full",
 );
 
-type ItemProps = LinkProps &
-  AnchorHTMLAttributes<HTMLAnchorElement> & {
-    IconLeft?: IconType;
-    IconRight?: IconType;
-    navId?: string;
-  };
+const indicatorClasses: UIThemeClasses = {
+  dark: twJoin("dark:border-lime-300 dark:bg-lime-300 dark:text-lime-950"),
+  light: twJoin("border-lime-500 bg-lime-500 text-lime-950"),
+};
 
-export function Item(props: Readonly<ItemProps>) {
-  const { children, href, IconLeft, IconRight, navId, ...rest } = props;
+type UINavItemProps = {
+  children: ReactNode;
+  href: string;
+  IconLeft?: IconType;
+  IconRight?: IconType;
+};
+
+function Item(props: Readonly<UINavItemProps>) {
+  const { children, href, IconLeft, IconRight } = props;
 
   const pathname = usePathname();
 
+  const { id } = useNavContext();
+
   return (
-    <motion.li className="relative">
+    <motion.li className="relative" key={href}>
       <Link
-        {...rest}
         className={twMerge(
           itemCommonClasses,
-          itemClasses,
-          IconLeft && itemIconLeftClasses,
-          IconRight && itemIconRightClasses,
+          itemClasses.dark,
+          itemClasses.light,
         )}
         href={href}
       >
-        {IconLeft && <IconLeft className={itemIconSideClasses} />}
+        {IconLeft && <IconLeft className={iconClasses} />}
         <div className="grow text-center">{children}</div>
-        {IconRight && <IconRight className={itemIconSideClasses} />}
+        {IconRight && <IconRight className={iconClasses} />}
 
         <AnimatePresence mode="wait">
           {href === pathname && (
             <motion.div
               className={twMerge(
-                itemCommonClasses,
-                itemIndicatorClasses,
-                IconLeft && itemIconLeftClasses,
-                IconRight && itemIconRightClasses,
+                indicatorCommonClasses,
+                indicatorClasses.dark,
+                indicatorClasses.light,
               )}
-              id={navId}
-              layoutId={`${navId}-nav-indicator`}
+              id={`${id}-nav-indicator`}
+              layoutId={`${id}-nav-indicator`}
             >
-              {IconLeft && <IconLeft className={itemIconSideClasses} />}
-              <motion.div className="grow text-center">{children}</motion.div>
-              {IconRight && <IconRight className={itemIconSideClasses} />}
+              {IconLeft && <IconLeft className={iconClasses} />}
+              <motion.div>{children}</motion.div>
+              {IconRight && <IconRight className={iconClasses} />}
             </motion.div>
           )}
         </AnimatePresence>
@@ -116,3 +124,26 @@ export function Item(props: Readonly<ItemProps>) {
     </motion.li>
   );
 }
+
+type UINavWrapperProps = NavProps &
+  HTMLAttributes<HTMLUListElement> &
+  HTMLMotionProps<"ul">;
+
+function Wrapper(props: Readonly<UINavWrapperProps>) {
+  const { children, className, id, ...rest } = props;
+
+  const nav = useNav({ id });
+
+  return (
+    <NavContext.Provider value={nav}>
+      <motion.ul {...rest} className={twMerge("flex gap-2", className)}>
+        {children}
+      </motion.ul>
+    </NavContext.Provider>
+  );
+}
+
+export const UINav = {
+  Item,
+  Wrapper,
+};
