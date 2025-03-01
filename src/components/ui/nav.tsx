@@ -82,7 +82,7 @@ type UINavItemProps = {
   IconRight?: IconType;
 };
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 function Item(props: Readonly<UINavItemProps>) {
   const { children, href, IconLeft, IconRight } = props;
