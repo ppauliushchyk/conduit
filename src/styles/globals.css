@@ -38,21 +38,4 @@
   --color-zinc-950: oklch(0.141 0.005 285.823);
 }
 
-@layer base {
-}
-
-:root {
-}
-
-body {
-  @apply bg-zinc-200 font-sans text-zinc-900;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-  }
-
-  body {
-    @apply bg-zinc-900 font-sans text-zinc-100;
-  }
-}
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
