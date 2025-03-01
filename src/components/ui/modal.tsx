@@ -150,8 +150,6 @@ function Container(props: Readonly<UIModalContainerProps>) {
     return null;
   }
 
-  console.log(context.floatingStyles);
-
   return (
     <FloatingPortal>
       <FloatingOverlay
