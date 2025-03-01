@@ -87,7 +87,7 @@ const itemClasses: UIThemeClasses = {
 };
 
 const indicatorCommonClasses = twMerge(
-  "absolute inset-0 z-1 inline-flex items-center justify-center rounded-full",
+  "absolute inset-0 z-1 inline-flex items-center justify-center gap-2 rounded-full",
 );
 
 const indicatorClasses: UIThemeClasses = {
