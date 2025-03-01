@@ -169,7 +169,7 @@ function Container(props: Readonly<UIDropdownContainerProps>) {
 
 const contentClasses: UIThemeClasses = {
   dark: twJoin("dark:bg-zinc-700"),
-  light: twJoin("bg-zinc-400"),
+  light: twJoin("bg-zinc-200"),
 };
 
 type UIDropdownContentProps = HTMLAttributes<HTMLDivElement>;
@@ -209,9 +209,9 @@ const itemClasses: UIThemeClasses = {
     "dark:active:bg-zinc-600/80",
   ),
   light: twJoin(
-    "hover:bg-zinc-500/60",
-    "focus:bg-zinc-500/60",
-    "active:bg-zinc-500/80",
+    "hover:bg-zinc-300/60",
+    "focus:bg-zinc-300/60",
+    "active:bg-zinc-300/80",
   ),
 };
 
