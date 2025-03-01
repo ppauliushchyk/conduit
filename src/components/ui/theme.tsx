@@ -10,9 +10,10 @@ import {
   useState,
 } from "react";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
+import { twJoin, twMerge } from "tailwind-merge";
 
-import { Toggle } from "./_toggle";
-import { Theme } from "./types";
+import { UIToggle } from "./toggle";
+import { Theme, UIThemeClasses } from "./types";
 
 const themes: { [key: string]: Theme } = {
   dark: "dark",
@@ -20,9 +21,7 @@ const themes: { [key: string]: Theme } = {
 };
 
 function useTheme() {
-  const [theme, setTheme] = useState<Theme>(
-    (localStorage.getItem("theme") as Theme) || themes.system,
-  );
+  const [theme, setTheme] = useState<Theme>(themes.system);
 
   useEffect(() => {
     const stored = localStorage.getItem("theme") as Theme;
@@ -35,6 +34,8 @@ function useTheme() {
 
         setTheme(system);
       }
+    } else {
+      setTheme(stored);
     }
   }, []);
 
@@ -86,20 +87,31 @@ function useThemeContext() {
 export function UIThemeSwitch() {
   const { theme, setTheme } = useThemeContext();
 
+  if (!theme) {
+    return <UIThemeSwitchSkeleton />;
+  }
+
   return (
-    <Toggle
-      onSelect={setTheme}
-      options={[
-        {
-          label: MdOutlineLightMode,
-          value: themes.light,
-        },
-        {
-          label: MdOutlineDarkMode,
-          value: themes.dark,
-        },
-      ]}
-      selected={theme}
+    <UIToggle.Wrapper onValueChange={setTheme} value={theme}>
+      <UIToggle.Item Icon={MdOutlineLightMode} value={themes.light} />
+      <UIToggle.Item Icon={MdOutlineDarkMode} value={themes.dark} />
+    </UIToggle.Wrapper>
+  );
+}
+
+const skeletonClasses: UIThemeClasses = {
+  dark: twJoin("dark:border-zinc-500 dark:bg-zinc-800"),
+  light: twJoin("border-zinc-500 bg-zinc-300"),
+};
+
+function UIThemeSwitchSkeleton() {
+  return (
+    <div
+      className={twMerge(
+        "h-[42px] w-[82px] animate-pulse rounded-full",
+        skeletonClasses.dark,
+        skeletonClasses.light,
+      )}
     />
   );
 }
