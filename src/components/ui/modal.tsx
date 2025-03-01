@@ -29,15 +29,17 @@ import {
   useState,
 } from "react";
 import { MdOutlineClose } from "react-icons/md";
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
-import { Button } from "./button";
+import { UIButton } from "./button";
+import { UIThemeClasses } from "./types";
 
-interface ModalProps {
+type ModalProps = {
   initialOpen?: boolean;
-  onOpenChange?(_open: boolean): void;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange?(open: boolean): void;
   open?: boolean;
-}
+};
 
 function useModal(props: ModalProps) {
   const {
@@ -99,10 +101,10 @@ function useModalContext() {
   return context;
 }
 
-type CloseProps = ButtonHTMLAttributes<HTMLButtonElement> &
+type UIModalCloseProps = ButtonHTMLAttributes<HTMLButtonElement> &
   RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-export function Close(props: Readonly<CloseProps>) {
+function Close(props: Readonly<UIModalCloseProps>) {
   const { asChild, children, className, ref, ...rest } = props;
 
   const { setOpen } = useModalContext();
@@ -119,7 +121,7 @@ export function Close(props: Readonly<CloseProps>) {
   }
 
   return (
-    <Button
+    <UIButton
       {...rest}
       Icon={MdOutlineClose}
       aria-label="Close modal"
@@ -132,10 +134,15 @@ export function Close(props: Readonly<CloseProps>) {
   );
 }
 
-type ContainerProps = HTMLAttributes<HTMLDivElement> &
+const containerClasses: UIThemeClasses = {
+  dark: twJoin("dark:bg-zinc-900/20"),
+  light: twJoin("bg-zinc-200/20"),
+};
+
+type UIModalContainerProps = HTMLAttributes<HTMLDivElement> &
   RefAttributes<HTMLDivElement>;
 
-export function Container(props: Readonly<ContainerProps>) {
+function Container(props: Readonly<UIModalContainerProps>) {
   const context = useModalContext();
   const ref = useMergeRefs([context.refs.setFloating, props.ref]);
 
@@ -143,10 +150,16 @@ export function Container(props: Readonly<ContainerProps>) {
     return null;
   }
 
+  console.log(context.floatingStyles);
+
   return (
     <FloatingPortal>
       <FloatingOverlay
-        className="z-[999] grid place-items-center bg-zinc-200/20 p-4 backdrop-blur-sm dark:bg-zinc-900/20"
+        className={twMerge(
+          "z-[999] grid place-items-center p-4 backdrop-blur-sm",
+          containerClasses.dark,
+          containerClasses.light,
+        )}
         lockScroll
       >
         <FloatingFocusManager
@@ -169,9 +182,14 @@ export function Container(props: Readonly<ContainerProps>) {
   );
 }
 
-type ContentProps = HTMLAttributes<HTMLDivElement>;
+const contentClasses: UIThemeClasses = {
+  dark: twJoin("dark:bg-zinc-900"),
+  light: twJoin("bg-zinc-200"),
+};
 
-export function Content(props: Readonly<ContentProps>) {
+type UIModalContentProps = HTMLAttributes<HTMLDivElement>;
+
+function Content(props: Readonly<UIModalContentProps>) {
   const { children, className, ...rest } = props;
 
   const context = useModalContext();
@@ -183,7 +201,9 @@ export function Content(props: Readonly<ContentProps>) {
       <div
         {...rest}
         className={twMerge(
-          "flex w-full flex-col gap-4 rounded-3xl bg-zinc-200 p-1.5 shadow-2xl shadow-zinc-950/50 dark:bg-zinc-900",
+          "flex w-full flex-col gap-4 rounded-3xl p-1.5 shadow-2xl shadow-zinc-950/50",
+          contentClasses.dark,
+          contentClasses.light,
           className,
         )}
         style={styles}
@@ -194,50 +214,15 @@ export function Content(props: Readonly<ContentProps>) {
   );
 }
 
-type TriggerProps = HTMLAttributes<HTMLButtonElement> &
-  RefAttributes<HTMLButtonElement> & { asChild?: boolean };
+const descriptionClasses: UIThemeClasses = {
+  dark: twJoin("dark:text-zinc-400"),
+  light: twJoin("text-zinc-600"),
+};
 
-export function Trigger(props: Readonly<TriggerProps>) {
-  const { asChild, children, ...rest } = props;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const converted = (children || {}) as any;
-
-  const context = useModalContext();
-  const ref = useMergeRefs([
-    context.refs.setReference,
-    props.ref,
-    converted.ref,
-  ]);
-
-  if (asChild && isValidElement(children)) {
-    return cloneElement(
-      children,
-      context.getReferenceProps({
-        children,
-        ref,
-        ...rest,
-        ...converted.props,
-        "data-state": context.open ? "open" : "closed",
-      }),
-    );
-  }
-
-  return (
-    <Button
-      data-state={context.open ? "open" : "closed"}
-      ref={ref}
-      {...context.getReferenceProps(props)}
-    >
-      {children}
-    </Button>
-  );
-}
-
-type DescriptionProps = HTMLAttributes<HTMLParagraphElement> &
+type UIModalDescriptionProps = HTMLAttributes<HTMLParagraphElement> &
   RefAttributes<HTMLParagraphElement>;
 
-export function Description(props: Readonly<DescriptionProps>) {
+function Description(props: Readonly<UIModalDescriptionProps>) {
   const { children, className, ref, ...rest } = props;
 
   const { setDescriptionId } = useModalContext();
@@ -252,7 +237,12 @@ export function Description(props: Readonly<DescriptionProps>) {
   return (
     <p
       {...rest}
-      className={twMerge("text-sm text-zinc-600 dark:text-zinc-400", className)}
+      className={twMerge(
+        "text-sm",
+        descriptionClasses.dark,
+        descriptionClasses.light,
+        className,
+      )}
       id={id}
       ref={ref}
     >
@@ -261,9 +251,9 @@ export function Description(props: Readonly<DescriptionProps>) {
   );
 }
 
-type FooterProps = HTMLAttributes<HTMLDivElement>;
+type UIModalFooterProps = HTMLAttributes<HTMLDivElement>;
 
-export function Footer(props: Readonly<FooterProps>) {
+function Footer(props: Readonly<UIModalFooterProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -276,13 +266,13 @@ export function Footer(props: Readonly<FooterProps>) {
   );
 }
 
-type HeaderProps = HTMLAttributes<HTMLDivElement> & {
+type UIModalHeaderProps = HTMLAttributes<HTMLDivElement> & {
   description?: string;
   hasClose?: boolean;
   title?: string;
 };
 
-export function Header(props: Readonly<HeaderProps>) {
+function Header(props: Readonly<UIModalHeaderProps>) {
   const {
     children,
     className,
@@ -315,10 +305,10 @@ export function Header(props: Readonly<HeaderProps>) {
   );
 }
 
-type TitleProps = HTMLAttributes<HTMLHeadingElement> &
+type UIModalTitleProps = HTMLAttributes<HTMLHeadingElement> &
   RefAttributes<HTMLHeadingElement>;
 
-export function Title(props: Readonly<TitleProps>) {
+function Title(props: Readonly<UIModalTitleProps>) {
   const { children, className, ref, ...rest } = props;
 
   const { setLabelId } = useModalContext();
@@ -342,9 +332,49 @@ export function Title(props: Readonly<TitleProps>) {
   );
 }
 
-type WrapperProps = ModalProps & { children: ReactNode };
+type UIModalTriggerProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-export function Wrapper(props: Readonly<WrapperProps>) {
+function Trigger(props: Readonly<UIModalTriggerProps>) {
+  const { asChild, children, ...rest } = props;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const converted = (children || {}) as any;
+
+  const context = useModalContext();
+  const ref = useMergeRefs([
+    context.refs.setReference,
+    props.ref,
+    converted.ref,
+  ]);
+
+  if (asChild && isValidElement(children)) {
+    return cloneElement(
+      children,
+      context.getReferenceProps({
+        children,
+        ref,
+        ...rest,
+        ...converted.props,
+        "data-state": context.open ? "open" : "closed",
+      }),
+    );
+  }
+
+  return (
+    <UIButton
+      data-state={context.open ? "open" : "closed"}
+      ref={ref}
+      {...context.getReferenceProps(props)}
+    >
+      {children}
+    </UIButton>
+  );
+}
+
+type UIModalWrapperProps = ModalProps & { children: ReactNode };
+
+function Wrapper(props: Readonly<UIModalWrapperProps>) {
   const { children, ...rest } = props;
 
   const modal = useModal(rest);
@@ -353,3 +383,15 @@ export function Wrapper(props: Readonly<WrapperProps>) {
     <ModalContext.Provider value={modal}>{children}</ModalContext.Provider>
   );
 }
+
+export const UIModal = {
+  Close,
+  Container,
+  Content,
+  Description,
+  Footer,
+  Header,
+  Title,
+  Trigger,
+  Wrapper,
+};

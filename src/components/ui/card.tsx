@@ -1,9 +1,11 @@
 import { HTMLAttributes } from "react";
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
-type BodyProps = HTMLAttributes<HTMLDivElement>;
+import { UIThemeClasses } from "./types";
 
-export function Body(props: Readonly<BodyProps>) {
+type UICardBodyProps = HTMLAttributes<HTMLDivElement>;
+
+function Body(props: Readonly<UICardBodyProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -13,16 +15,23 @@ export function Body(props: Readonly<BodyProps>) {
   );
 }
 
-type ContentProps = HTMLAttributes<HTMLDivElement>;
+const contentClasses: UIThemeClasses = {
+  dark: twJoin("dark:bg-zinc-800"),
+  light: twJoin("bg-zinc-300"),
+};
 
-export function Content(props: Readonly<ContentProps>) {
+type UICardContentProps = HTMLAttributes<HTMLDivElement>;
+
+function Content(props: Readonly<UICardContentProps>) {
   const { children, className, ...rest } = props;
 
   return (
     <div
       {...rest}
       className={twMerge(
-        "flex w-full flex-col gap-4 rounded-3xl bg-zinc-300 p-1.5 dark:bg-zinc-800",
+        "flex w-full flex-col gap-4 rounded-3xl p-1.5",
+        contentClasses.dark,
+        contentClasses.light,
         className,
       )}
     >
@@ -31,24 +40,34 @@ export function Content(props: Readonly<ContentProps>) {
   );
 }
 
-type DescriptionProps = HTMLAttributes<HTMLParagraphElement>;
+const descriptionClasses: UIThemeClasses = {
+  dark: twJoin("dark:text-zinc-400"),
+  light: twJoin("text-zinc-600"),
+};
 
-export function Description(props: Readonly<DescriptionProps>) {
+type UICardDescriptionProps = HTMLAttributes<HTMLParagraphElement>;
+
+function Description(props: Readonly<UICardDescriptionProps>) {
   const { children, className, ...rest } = props;
 
   return (
     <p
       {...rest}
-      className={twMerge("text-sm text-zinc-600 dark:text-zinc-400", className)}
+      className={twMerge(
+        "text-sm",
+        descriptionClasses.dark,
+        descriptionClasses.light,
+        className,
+      )}
     >
       {children}
     </p>
   );
 }
 
-type FooterProps = HTMLAttributes<HTMLDivElement>;
+type UICardFooterProps = HTMLAttributes<HTMLDivElement>;
 
-export function Footer(props: Readonly<FooterProps>) {
+function Footer(props: Readonly<UICardFooterProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -61,12 +80,12 @@ export function Footer(props: Readonly<FooterProps>) {
   );
 }
 
-type HeaderProps = HTMLAttributes<HTMLDivElement> & {
+type UICardHeaderProps = HTMLAttributes<HTMLDivElement> & {
   description?: string;
   title?: string;
 };
 
-export function Header(props: Readonly<HeaderProps>) {
+function Header(props: Readonly<UICardHeaderProps>) {
   const { children, className, title, description, ...rest } = props;
 
   return (
@@ -86,9 +105,9 @@ export function Header(props: Readonly<HeaderProps>) {
   );
 }
 
-type TitleProps = HTMLAttributes<HTMLHeadingElement>;
+type UICardTitleProps = HTMLAttributes<HTMLHeadingElement>;
 
-export function Title(props: Readonly<TitleProps>) {
+function Title(props: Readonly<UICardTitleProps>) {
   const { children, className, ...rest } = props;
 
   return (
@@ -97,3 +116,12 @@ export function Title(props: Readonly<TitleProps>) {
     </h3>
   );
 }
+
+export const UICard = {
+  Body,
+  Content,
+  Description,
+  Footer,
+  Header,
+  Title,
+};

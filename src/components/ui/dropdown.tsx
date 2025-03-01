@@ -9,6 +9,7 @@ import {
   FloatingPortal,
   offset,
   shift,
+  size,
   useClick,
   useDismiss,
   useFloating,
@@ -34,13 +35,15 @@ import {
   useState,
 } from "react";
 import { MdOutlineArrowDropDown, MdOutlineArrowDropUp } from "react-icons/md";
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
-import { Button } from "./button";
+import { UIButton } from "./button";
+import { UIThemeClasses } from "./types";
 
 type DropdownProps = {
   initialOpen?: boolean;
-  onOpenChange?(_open: boolean): void;
+  // eslint-disable-next-line no-unused-vars
+  onOpenChange?(open: boolean): void;
   open?: boolean;
   placement?: Placement;
 };
@@ -71,6 +74,13 @@ function useDropdown(props: DropdownProps) {
         padding: 6,
       }),
       shift({ padding: 6 }),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            minWidth: `${rects.reference.width}px`,
+          });
+        },
+      }),
     ],
     onOpenChange: setOpen,
     open,
@@ -132,10 +142,10 @@ function useDropdownContext() {
   return context;
 }
 
-type ContainerProps = HTMLAttributes<HTMLDivElement> &
+type UIDropdownContainerProps = HTMLAttributes<HTMLDivElement> &
   RefAttributes<HTMLDivElement>;
 
-export function Container(props: Readonly<ContainerProps>) {
+function Container(props: Readonly<UIDropdownContainerProps>) {
   const context = useDropdownContext();
   const ref = useMergeRefs([context.refs.setFloating, props.ref]);
 
@@ -157,9 +167,14 @@ export function Container(props: Readonly<ContainerProps>) {
   );
 }
 
-type ContentProps = HTMLAttributes<HTMLDivElement>;
+const contentClasses: UIThemeClasses = {
+  dark: twJoin("dark:bg-zinc-700"),
+  light: twJoin("bg-zinc-400"),
+};
 
-export function Content(props: Readonly<ContentProps>) {
+type UIDropdownContentProps = HTMLAttributes<HTMLDivElement>;
+
+function Content(props: Readonly<UIDropdownContentProps>) {
   const { children, className, ...rest } = props;
 
   const context = useDropdownContext();
@@ -172,7 +187,9 @@ export function Content(props: Readonly<ContentProps>) {
       <div
         {...rest}
         className={twMerge(
-          "overflow-hidden rounded-2xl bg-zinc-400 py-2 shadow-2xl shadow-zinc-950/50 dark:bg-zinc-700",
+          "overflow-hidden rounded-2xl py-2 shadow-2xl shadow-zinc-950/50",
+          contentClasses.dark,
+          contentClasses.light,
           className,
         )}
         style={styles}
@@ -185,9 +202,22 @@ export function Content(props: Readonly<ContentProps>) {
   );
 }
 
-type ItemProps = HTMLAttributes<HTMLButtonElement>;
+const itemClasses: UIThemeClasses = {
+  dark: twJoin(
+    "dark:hover:bg-zinc-600/60",
+    "dark:focus:bg-zinc-600/60",
+    "dark:active:bg-zinc-600/80",
+  ),
+  light: twJoin(
+    "hover:bg-zinc-500/60",
+    "focus:bg-zinc-500/60",
+    "active:bg-zinc-500/80",
+  ),
+};
 
-export function Item(props: Readonly<ItemProps>) {
+type UIDropdownItemProps = ButtonHTMLAttributes<HTMLButtonElement>;
+
+function Item(props: Readonly<UIDropdownItemProps>) {
   const { children, className, onClick, ...rest } = props;
 
   const { activeIndex, getItemProps } = useDropdownContext();
@@ -199,31 +229,26 @@ export function Item(props: Readonly<ItemProps>) {
       className={twMerge(
         "block w-full cursor-pointer px-4 py-3 text-left text-sm font-medium",
         "focus:outline-none",
-        "hover:bg-zinc-500/60",
-        "focus:bg-zinc-500/60",
-        "active:bg-zinc-500/80",
-        "dark:hover:bg-zinc-600/60",
-        "dark:focus:bg-zinc-600/60",
-        "dark:active:bg-zinc-600/80",
+        itemClasses.dark,
+        itemClasses.light,
         className,
       )}
       key={index}
-      onClick={onClick}
       ref={ref}
       role="menuitem"
       tabIndex={activeIndex === index ? 0 : -1}
       type="button"
-      {...getItemProps()}
+      {...getItemProps({ onClick })}
     >
       {children}
     </button>
   );
 }
 
-type TriggerProps = ButtonHTMLAttributes<HTMLButtonElement> &
+type UIDropdownTriggerProps = ButtonHTMLAttributes<HTMLButtonElement> &
   RefAttributes<HTMLButtonElement> & { asChild?: boolean };
 
-export function Trigger(props: Readonly<TriggerProps>) {
+function Trigger(props: Readonly<UIDropdownTriggerProps>) {
   const { asChild, children, ...rest } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -250,20 +275,20 @@ export function Trigger(props: Readonly<TriggerProps>) {
   }
 
   return (
-    <Button
+    <UIButton
       IconRight={context.open ? MdOutlineArrowDropUp : MdOutlineArrowDropDown}
       data-state={context.open ? "open" : "closed"}
       ref={ref}
       {...context.getReferenceProps(props)}
     >
       {children}
-    </Button>
+    </UIButton>
   );
 }
 
-type WrapperProps = DropdownProps & { children: ReactNode };
+type UIDropdownWrapperProps = DropdownProps & { children: ReactNode };
 
-export function Wrapper(props: Readonly<WrapperProps>) {
+function Wrapper(props: Readonly<UIDropdownWrapperProps>) {
   const { children, ...rest } = props;
 
   const dropdown = useDropdown(rest);
@@ -274,3 +299,11 @@ export function Wrapper(props: Readonly<WrapperProps>) {
     </DropdownContext.Provider>
   );
 }
+
+export const UIDropdown = {
+  Container,
+  Content,
+  Item,
+  Trigger,
+  Wrapper,
+};
