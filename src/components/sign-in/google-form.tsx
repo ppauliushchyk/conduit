@@ -3,9 +3,9 @@
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 
-import { UIButton } from "../ui/button";
-
 import { signInGoogleAsync } from "@/app/actions/auth";
+
+import { UIButton } from "../ui/button";
 
 export function GoogleForm() {
   const searchParams = useSearchParams();

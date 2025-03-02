@@ -3,10 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import { useActionState } from "react";
 
+import { signInCredentialsAsync } from "@/app/actions/auth";
+
 import { UIButton } from "../ui/button";
 import { UIInput } from "../ui/input";
-
-import { signInCredentialsAsync } from "@/app/actions/auth";
 
 export function CredentialsForm() {
   const searchParams = useSearchParams();
